@@ -3,12 +3,10 @@
 # Include your site.yml or just use the ceph-ansible sample:
 - include: "{{ lookup('env','CEPH_ANSIBLE') }}/site.yml.sample"
   vars:
-    monitor_address_block: 192.168.128.0/17
-    public_network: 192.168.128.0/17
-    # there is no cluster network possible in linode at this time
-
+    cluster_network: 192.168.0.0/16
     devices: [/dev/sdc]
     journal_collocation: true
     journal_size: 100
-    # if you want fewer than 3 OSD hosts in cluster...
-    #pool_default_size: 1
+    monitor_address_block: 192.168.0.0/16
+    pool_default_size: 2
+    public_network: 192.168.0.0/16
