@@ -10,7 +10,7 @@ source "$(dirname "$0")/ansible-env.bash"
 CEPH_ANSIBLE=~/ceph-ansible/
 NUKE=0
 LOG=OUTPUT
-YML="$(dirname "$0")/linode.yml"
+YML=$CEPH_ANSIBLE/site.yml.sample
 RETRY="${YML%.*}.retry"
 
 function main {
@@ -32,12 +32,8 @@ function main {
     fi
 
     # Sometimes we hit transient errors, so retry until it works!
-    if ! do_playbook --limit=all "$YML"; then
-        # Always include the mons because we need their statistics to generate ceph.conf
-        printf 'mons\nmgrs\n' >> "$RETRY"
-        do_playbook --limit=@"${RETRY}" "$YML"
-        rm -f -- "${RETRY}"
-    fi
+    cd $CEPH_ANSIBLE
+    do_playbook $YML
 }
 
 ARGUMENTS='--options c:,h,n,l: --long ceph-ansible:,help,nuke,log:'
